@@ -1,0 +1,109 @@
+.highlight-card {
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 600px;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.highlight-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+}
+
+.card-header {
+  background: linear-gradient(135deg, #0A2A43 0%, #1a3a53 100%);
+  color: white;
+  padding: 20px;
+  text-align: center;
+}
+
+.card-header h3 {
+  margin: 0;
+  font-family: 'Merriweather', serif;
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+
+.card-content {
+  padding: 25px;
+}
+
+.card-topic h4 {
+  color: #0A2A43;
+  font-family: 'Merriweather', serif;
+  font-size: 1.3rem;
+  margin-top: 0;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.card-speaker p {
+  margin: 5px 0;
+  font-family: 'Inter', sans-serif;
+  color: #333;
+}
+
+.speaker-designation {
+  color: #B6932E !important;
+  font-weight: 500;
+  margin-top: 5px !important;
+}
+
+.card-details p {
+  margin: 10px 0;
+  font-family: 'Inter', sans-serif;
+  color: #444;
+}
+
+.card-deadline {
+  margin: 20px 0;
+  text-align: center;
+}
+
+.deadline-text {
+  background: #fff8e6;
+  color: #B6932E;
+  padding: 10px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  margin: 0;
+}
+
+.register-button {
+  width: 100%;
+  padding: 15px;
+  background: linear-gradient(135deg, #B6932E 0%, #d4b44d 100%);
+  color: #0A2A43;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'Inter', sans-serif;
+  margin-top: 15px;
+}
+
+.register-button:hover {
+  background: linear-gradient(135deg, #d4b44d 0%, #B6932E 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(182, 147, 46, 0.3);
+}
+
+@media screen and (max-width: 768px) {
+  .card-content {
+    padding: 20px;
+  }
+  
+  .card-header h3 {
+    font-size: 1.2rem;
+  }
+  
+  .card-topic h4 {
+    font-size: 1.1rem;
+  }
+}

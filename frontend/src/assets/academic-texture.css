@@ -1,0 +1,9 @@
+/* This is a placeholder for academic texture */
+.academic-texture {
+  background-image: linear-gradient(45deg, rgba(10, 42, 67, 0.05) 25%, transparent 25%), 
+                    linear-gradient(-45deg, rgba(10, 42, 67, 0.05) 25%, transparent 25%),
+                    linear-gradient(45deg, transparent 75%, rgba(10, 42, 67, 0.05) 75%),
+                    linear-gradient(-45deg, transparent 75%, rgba(10, 42, 67, 0.05) 75%);
+  background-size: 20px 20px;
+  background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+}
