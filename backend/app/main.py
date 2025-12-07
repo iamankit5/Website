@@ -14,7 +14,7 @@ def create_app():
     print("=== College Registration Backend Starting ===")
     print(f"Current working directory: {os.getcwd()}")
     
-    # Configure CORS to allow multiple frontend ports
+    # Configure CORS to allow multiple frontend ports and domains
     CORS(app, origins=[
         "http://localhost:3000",
         "http://localhost:3001",
@@ -23,8 +23,15 @@ def create_app():
         "http://localhost:3004",
         "http://localhost:3005",
         "http://localhost:3006",
+        "http://localhost:3007",
         "http://127.0.0.1:3000",
-        "http://127.0.0.1:3006"
+        "http://127.0.0.1:3006",
+        "http://127.0.0.1:3007",
+        "https://collage-1-kwmn.onrender.com",
+        # Add your Vercel domain here
+        "https://collage-iota.vercel.app",
+        # Wildcard for future Vercel deployments
+        "https://*.vercel.app"
     ])
     
     # Register blueprints
