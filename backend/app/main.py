@@ -1,6 +1,6 @@
 from flask import Flask, jsonify
 from flask_cors import CORS
-from .routes import registration 
+from app.routes import registration
 import os
 from dotenv import load_dotenv
 
@@ -34,11 +34,16 @@ def create_app():
     def root():
         return jsonify({"message": "College Registration API"})
     
-    @app.before_first_request
-    def startup_message():
-        print("✅ Backend started successfully!")
-        print("Available routes:")
-        # Note: Flask doesn't have a direct way to list all routes like FastAPI
+    # Initialize startup message flag
+    app._startup_message_shown = False
+    
+    @app.before_request
+    def startup_message_once():
+        if not app._startup_message_shown:
+            print("✅ Backend started successfully!")
+            print("Available routes:")
+            # Note: Flask doesn't have a direct way to list all routes like FastAPI
+            app._startup_message_shown = True
     
     return app
 
