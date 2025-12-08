@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import './Registration.css';
@@ -9,33 +9,54 @@ const Registration = () => {
     fullName: '',
     email: '',
     department: '',
-    semester: '',
-    googleMeetEmail: '',
-    lecture: 'Lecture-1'
+    institution: '',
+    designation: '',
+    whatsappNumber: '',
+    lecture: ''
   });
   
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [lectures, setLectures] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [registrationsClosed, setRegistrationsClosed] = useState(false);
 
-  const lectures = [
-    'Lecture-1',
-    'Lecture-2', 
-    'Lecture-3',
-    'Lecture-4',
-    'Lecture-5',
-    'Lecture-6'
-  ];
+  // Fetch available lectures when component mounts
+  useEffect(() => {
+    const fetchLectures = async () => {
+      try {
+        const response = await api.get('/lectures');
+        setLectures(response.data);
+        
+        // Set default lecture to the first available one
+        const lectureKeys = Object.keys(response.data);
+        if (lectureKeys.length > 0) {
+          setFormData(prev => ({
+            ...prev,
+            lecture: lectureKeys[0]
+          }));
+        } else {
+          // No lectures available
+          setRegistrationsClosed(true);
+        }
+      } catch (error) {
+        console.error('Error fetching lectures:', error);
+        // Fallback to default lectures if API fails
+        const defaultLectures = {
+          'Lecture-1': { name: 'Lecture 1', status: 'open' }
+        };
+        setLectures(defaultLectures);
+        setFormData(prev => ({
+          ...prev,
+          lecture: 'Lecture-1'
+        }));
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const departments = [
-    'Data Science',
-    'Computer Science',
-    'Information Technology',
-    'Mathematics',
-    'Statistics',
-    'Other'
-  ];
-
-  const semesters = ['1st', '2nd', '3rd', '4th', '5th', '6th'];
+    fetchLectures();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -56,28 +77,45 @@ const Registration = () => {
   const validateForm = () => {
     const newErrors = {};
     
+    // Full Name validation (mandatory)
     if (!formData.fullName.trim()) {
       newErrors.fullName = 'Full name is required';
     }
     
+    // Email validation (mandatory, must contain @)
     if (!formData.email.trim()) {
       newErrors.email = 'Email is required';
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Email is invalid';
+    } else if (!formData.email.includes('@')) {
+      newErrors.email = 'Email must contain @ symbol';
+    } else if (!/\.(gmail|outlook)\./.test(formData.email) && !/@(gmail|outlook)\./.test(formData.email)) {
+      newErrors.email = 'Email must be from Gmail or Outlook domain';
     }
     
-    if (!formData.department) {
+    // Department validation (mandatory)
+    if (!formData.department.trim()) {
       newErrors.department = 'Department is required';
     }
     
-    if (!formData.semester) {
-      newErrors.semester = 'Semester is required';
+    // Institution validation (mandatory)
+    if (!formData.institution.trim()) {
+      newErrors.institution = 'Institution is required';
     }
     
-    if (!formData.googleMeetEmail.trim()) {
-      newErrors.googleMeetEmail = 'Google Meet email is required';
-    } else if (!/\S+@\S+\.\S+/.test(formData.googleMeetEmail)) {
-      newErrors.googleMeetEmail = 'Google Meet email is invalid';
+    // Designation validation (mandatory)
+    if (!formData.designation.trim()) {
+      newErrors.designation = 'Designation is required';
+    }
+    
+    // WhatsApp Number validation (mandatory, exactly 10 digits)
+    if (!formData.whatsappNumber.trim()) {
+      newErrors.whatsappNumber = 'WhatsApp number is required';
+    } else if (!/^\d{10}$/.test(formData.whatsappNumber)) {
+      newErrors.whatsappNumber = 'WhatsApp number must be exactly 10 digits';
+    }
+    
+    // Lecture validation
+    if (!formData.lecture) {
+      newErrors.lecture = 'Please select a lecture';
     }
     
     setErrors(newErrors);
@@ -98,8 +136,9 @@ const Registration = () => {
       const transformedData = {
         name: formData.fullName,
         email: formData.email,
-        mobile: formData.googleMeetEmail, // Using Google Meet email as mobile for now
-        occupation: `${formData.department} - ${formData.semester}` // Combine department and semester
+        mobile: formData.whatsappNumber,
+        occupation: `${formData.department} - ${formData.institution} - ${formData.designation}`,
+        lecture: formData.lecture
       };
       
       const response = await api.post('/submit', transformedData);
@@ -116,6 +155,33 @@ const Registration = () => {
       setIsSubmitting(false);
     }
   };
+
+  if (loading) {
+    return (
+      <div className="registration-page">
+        <div className="container">
+          <div className="registration-header">
+            <h1 className="page-title">Register for Lectures</h1>
+            <p className="page-subtitle">Loading available lectures...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (registrationsClosed) {
+    return (
+      <div className="registration-page">
+        <div className="container">
+          <div className="registration-header">
+            <h1 className="page-title">Registrations Closed</h1>
+            <p className="page-subtitle">Sorry, registrations for all lectures are currently closed.</p>
+            <p>Please check back later for upcoming lectures.</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="registration-page">
@@ -151,7 +217,7 @@ const Registration = () => {
                   value={formData.email}
                   onChange={handleChange}
                   className={`form-input futuristic-glow ${errors.email ? 'error' : ''}`}
-                  placeholder="Enter your email"
+                  placeholder="Enter your email (Gmail or Outlook)"
                 />
                 {errors.email && <span className="error-message">{errors.email}</span>}
               </div>
@@ -160,54 +226,64 @@ const Registration = () => {
             <div className="form-row">
               <div className="form-group">
                 <label htmlFor="department" className="form-label">Department *</label>
-                <select
+                <input
+                  type="text"
                   id="department"
                   name="department"
                   value={formData.department}
                   onChange={handleChange}
-                  className={`form-select futuristic-glow ${errors.department ? 'error' : ''}`}
-                >
-                  <option value="">Select Department</option>
-                  {departments.map(dept => (
-                    <option key={dept} value={dept}>{dept}</option>
-                  ))}
-                </select>
+                  className={`form-input futuristic-glow ${errors.department ? 'error' : ''}`}
+                  placeholder="Enter your department"
+                />
                 {errors.department && <span className="error-message">{errors.department}</span>}
               </div>
               
               <div className="form-group">
-                <label htmlFor="semester" className="form-label">Semester *</label>
-                <select
-                  id="semester"
-                  name="semester"
-                  value={formData.semester}
+                <label htmlFor="institution" className="form-label">Institution *</label>
+                <input
+                  type="text"
+                  id="institution"
+                  name="institution"
+                  value={formData.institution}
                   onChange={handleChange}
-                  className={`form-select futuristic-glow ${errors.semester ? 'error' : ''}`}
-                >
-                  <option value="">Select Semester</option>
-                  {semesters.map(sem => (
-                    <option key={sem} value={sem}>{sem}</option>
-                  ))}
-                </select>
-                {errors.semester && <span className="error-message">{errors.semester}</span>}
+                  className={`form-input futuristic-glow ${errors.institution ? 'error' : ''}`}
+                  placeholder="Enter your institution"
+                />
+                {errors.institution && <span className="error-message">{errors.institution}</span>}
               </div>
             </div>
             
             <div className="form-row">
               <div className="form-group">
-                <label htmlFor="googleMeetEmail" className="form-label">Google Meet Email *</label>
+                <label htmlFor="designation" className="form-label">Designation *</label>
                 <input
-                  type="email"
-                  id="googleMeetEmail"
-                  name="googleMeetEmail"
-                  value={formData.googleMeetEmail}
+                  type="text"
+                  id="designation"
+                  name="designation"
+                  value={formData.designation}
                   onChange={handleChange}
-                  className={`form-input futuristic-glow ${errors.googleMeetEmail ? 'error' : ''}`}
-                  placeholder="Enter your Google Meet email"
+                  className={`form-input futuristic-glow ${errors.designation ? 'error' : ''}`}
+                  placeholder="Enter your designation"
                 />
-                {errors.googleMeetEmail && <span className="error-message">{errors.googleMeetEmail}</span>}
+                {errors.designation && <span className="error-message">{errors.designation}</span>}
               </div>
               
+              <div className="form-group">
+                <label htmlFor="whatsappNumber" className="form-label">WhatsApp Number *</label>
+                <input
+                  type="tel"
+                  id="whatsappNumber"
+                  name="whatsappNumber"
+                  value={formData.whatsappNumber}
+                  onChange={handleChange}
+                  className={`form-input futuristic-glow ${errors.whatsappNumber ? 'error' : ''}`}
+                  placeholder="Enter WhatsApp number (10 digits)"
+                />
+                {errors.whatsappNumber && <span className="error-message">{errors.whatsappNumber}</span>}
+              </div>
+            </div>
+            
+            <div className="form-row">
               <div className="form-group">
                 <label htmlFor="lecture" className="form-label">Lecture *</label>
                 <select
@@ -215,12 +291,14 @@ const Registration = () => {
                   name="lecture"
                   value={formData.lecture}
                   onChange={handleChange}
-                  className="form-select futuristic-glow"
+                  className={`form-select futuristic-glow ${errors.lecture ? 'error' : ''}`}
                 >
-                  {lectures.map(lecture => (
-                    <option key={lecture} value={lecture}>{lecture}</option>
+                  <option value="">Select a Lecture</option>
+                  {Object.entries(lectures).map(([id, lecture]) => (
+                    <option key={id} value={id}>{lecture.name}</option>
                   ))}
                 </select>
+                {errors.lecture && <span className="error-message">{errors.lecture}</span>}
               </div>
             </div>
             

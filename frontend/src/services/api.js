@@ -4,7 +4,7 @@ import axios from 'axios';
 
 // Create axios instance with default config
 const apiClient = axios.create({
-  baseURL: 'http://localhost:8000/api', // Updated to include /api prefix
+  baseURL: `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'}/api`,
   timeout: 30000, // Increase timeout to 30 seconds
   headers: {
     'Content-Type': 'application/json',
@@ -72,6 +72,15 @@ apiClient.interceptors.response.use(
 export const submitRegistration = async (formData) => {
   try {
     const response = await apiClient.post('/submit', formData);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getLectures = async () => {
+  try {
+    const response = await apiClient.get('/lectures');
     return response.data;
   } catch (error) {
     throw error;
