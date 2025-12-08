@@ -5,6 +5,16 @@ from ..services import google_sheets
 
 bp = Blueprint('registration', __name__)
 
+# Lecture configuration - open one lecture for testing
+LECTURES = {
+    'Lecture-1': {'name': 'Lecture 1', 'status': 'open'},
+    'Lecture-2': {'name': 'Lecture 2', 'status': 'closed'},
+    'Lecture-3': {'name': 'Lecture 3', 'status': 'closed'},
+    'Lecture-4': {'name': 'Lecture 4', 'status': 'closed'},
+    'Lecture-5': {'name': 'Lecture 5', 'status': 'closed'},
+    'Lecture-6': {'name': 'Lecture 6', 'status': 'closed'}
+}
+
 def validate_registration_data(data):
     # Validate required fields
     if not data.get('name') or not data.get('email') or not data.get('mobile') or not data.get('occupation'):
@@ -14,16 +24,27 @@ def validate_registration_data(data):
     if len(data['name'].strip()) < 3:
         return False, "Name must be at least 3 characters long"
     
-    if not re.match("^[A-Za-z\s]+$", data['name']):
+    if not re.match(r"^[A-Za-z\s]+$", data['name']):
         return False, "Name should contain only alphabets and spaces"
     
-    # Validate email format
+    # Validate email format (must contain @ and be from Gmail or Outlook)
     if not re.match(r"[^@]+@[^@]+\.[^@]+", data['email']):
         return False, "Invalid email format"
     
-    # Validate mobile (email format for Google Meet email)
-    if not re.match(r"[^@]+@[^@]+\.[^@]+", data['mobile']):
-        return False, "Invalid Google Meet email format"
+    if not (".gmail." in data['email'] or ".outlook." in data['email'] or "@gmail." in data['email'] or "@outlook." in data['email']):
+        return False, "Email must be from Gmail or Outlook domain"
+    
+    # Validate mobile (WhatsApp number: exactly 10 digits)
+    if not re.match(r"^\d{10}$", data['mobile']):
+        return False, "WhatsApp number must be exactly 10 digits"
+    
+    # Validate lecture
+    lecture_id = data.get('lecture', 'Lecture-1')
+    if lecture_id not in LECTURES:
+        return False, "Invalid lecture selected"
+    
+    if LECTURES[lecture_id]['status'] != 'open':
+        return False, f"Registration for {LECTURES[lecture_id]['name']} is currently closed"
     
     return True, None
 
@@ -50,7 +71,7 @@ def submit_registration():
                 print("Duplicate registration found")
                 return jsonify({
                     "success": False,
-                    "message": "A registration with this email or Google Meet email already exists"
+                    "message": "A registration with this email or WhatsApp number already exists"
                 }), 409
         except Exception as e:
             # If Google Sheets is not available, log the error but continue
@@ -94,3 +115,10 @@ def submit_registration():
 def register():
     # Alias for the submit endpoint to maintain compatibility
     return submit_registration()
+
+@bp.route("/lectures", methods=['GET'])
+def get_lectures():
+    """Return list of available lectures"""
+    # Filter only open lectures
+    open_lectures = {k: v for k, v in LECTURES.items() if v['status'] == 'open'}
+    return jsonify(open_lectures)
