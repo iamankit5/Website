@@ -16,46 +16,59 @@ LECTURES = {
 }
 
 def validate_registration_data(data):
+    print("Validating registration data:", data)
     # Validate required fields
     if not data.get('name') or not data.get('email') or not data.get('mobile') or not data.get('occupation'):
+        print("Missing required fields")
         return False, "All fields are required"
     
     # Validate name (min 3 chars, alphabets and spaces only)
     if len(data['name'].strip()) < 3:
+        print("Name too short")
         return False, "Name must be at least 3 characters long"
     
     if not re.match(r"^[A-Za-z\s]+$", data['name']):
+        print("Invalid name format")
         return False, "Name should contain only alphabets and spaces"
     
     # Validate email format (must contain @ and be from Gmail or Outlook)
     if not re.match(r"[^@]+@[^@]+\.[^@]+", data['email']):
+        print("Invalid email format")
         return False, "Invalid email format"
     
     if not (".gmail." in data['email'] or ".outlook." in data['email'] or "@gmail." in data['email'] or "@outlook." in data['email']):
+        print("Email not from Gmail or Outlook")
         return False, "Email must be from Gmail or Outlook domain"
     
     # Validate mobile (WhatsApp number: exactly 10 digits)
     if not re.match(r"^\d{10}$", data['mobile']):
+        print("Invalid mobile format")
         return False, "WhatsApp number must be exactly 10 digits"
     
     # Validate lecture
     lecture_id = data.get('lecture', 'Lecture-1')
     if lecture_id not in LECTURES:
+        print("Invalid lecture")
         return False, "Invalid lecture selected"
     
     if LECTURES[lecture_id]['status'] != 'open':
+        print("Lecture closed")
         return False, f"Registration for {LECTURES[lecture_id]['name']} is currently closed"
     
+    print("Validation passed")
     return True, None
 
 @bp.route("/submit", methods=['POST'])
 def submit_registration():
+    print("Received registration request")
     try:
         data = request.get_json()
+        print("Request data:", data)
         
         # Validate data
         is_valid, error_message = validate_registration_data(data)
         if not is_valid:
+            print("Validation failed:", error_message)
             return jsonify({
                 "success": False,
                 "message": error_message
