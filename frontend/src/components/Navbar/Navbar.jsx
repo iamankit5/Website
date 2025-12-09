@@ -27,7 +27,7 @@ const Navbar = () => {
     <nav className="navbar neumorphic">
       <div className="nav-container container">
         <Link to="/" className="nav-logo" onClick={closeMenu}>
-          <img src="/logo/cism.png" alt="CISM Logo" className="nav-logo-img" />
+          <img src="/logo/logo.png" alt="Logo" className="nav-logo-img" />
           <span className="nav-logo-text">CISM</span>
         </Link>
         

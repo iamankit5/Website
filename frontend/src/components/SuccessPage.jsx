@@ -1,8 +1,10 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import './SuccessPage.css';
 
 const SuccessPage = () => {
-  const whatsappLink = "https://wa.me/xxxxxxxxxx?text=Hi%20I%20have%20registered";
+  const navigate = useNavigate();
+  const whatsappLink = "https://chat.whatsapp.com/FdhHvznH4BH3fynJntnavF";
 
   return (
     <div className="success-page-container">
@@ -22,7 +24,7 @@ const SuccessPage = () => {
             Join WhatsApp Group
           </a>
           <button 
-            onClick={() => window.location.href = '/'}
+            onClick={() => navigate('/')}
             className="back-button"
           >
             Register Another User

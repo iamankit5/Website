@@ -67,7 +67,7 @@
 }
 
 .success-card h2 {
-  color: #E0E0E0;
+  color: #000000; /* Changed from #E0E0E0 to black */
   margin-bottom: 25px;
   font-weight: 700;
   font-size: 36px;
@@ -75,7 +75,7 @@
 }
 
 .success-card p {
-  color: #B0B0B0;
+  color: #000000; /* Changed from #B0B0B0 to black */
   margin-bottom: 40px;
   font-size: 20px;
   line-height: 1.6;

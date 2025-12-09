@@ -11,7 +11,7 @@ const Schedule = () => {
       date: "11.12.2025",
       time: "12:00 PM",
       mode: "Online (Google Meet)",
-      register: "Closed"
+      register: "Open"
     }
   ];
 

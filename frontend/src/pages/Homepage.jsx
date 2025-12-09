@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import './Homepage.css';
 
 const Homepage = () => {
@@ -17,12 +18,12 @@ const Homepage = () => {
             Calcutta Institute of Science and Management College, Kolkata, India
           </p>
           <div className="hero-buttons">
-            <a href="/register" className="btn primary-btn futuristic-glow">
+            <Link to="/register" className="btn primary-btn futuristic-glow">
               Register Now
-            </a>
-            <a href="/schedule" className="btn secondary-btn futuristic-glow">
+            </Link>
+            <Link to="/schedule" className="btn secondary-btn futuristic-glow">
               View Schedule
-            </a>
+            </Link>
           </div>
         </div>
       </section>
@@ -59,7 +60,7 @@ const Homepage = () => {
             </div>
             <h3 className="feature-title">Expert Speakers</h3>
             <p className="feature-description">
-              Learn from industry experts and academics in data science and research.
+              Learn from industry experts and academics in data science and Multidisciplinary area and research.
             </p>
           </div>
           
@@ -86,7 +87,7 @@ const Homepage = () => {
             </div>
             <h3 className="feature-title">Networking</h3>
             <p className="feature-description">
-              Connect with peers and professionals in the data science community.
+              Connect with peers and professionals in the data science and Multidisciplinary area community.
             </p>
           </div>
         </div>

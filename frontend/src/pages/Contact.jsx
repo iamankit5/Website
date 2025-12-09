@@ -32,7 +32,7 @@ const Contact = () => {
             
             <div className="contact-details">
               <h3>Contact Information</h3>
-              <p><strong>Phone:</strong> Will be published upon confirmation</p>
+              <p><strong>Phone:</strong> 8272922792</p>
               <p className="contact-note">
                 For queries, contact student coordinators
               </p>

@@ -15,7 +15,7 @@ const About = () => {
             <p>
               This development lecture series aims to improve research, technical skill and language efficiency for students. 
               The program is designed to bridge the gap between theoretical knowledge and practical application, providing 
-              students with valuable insights from industry experts and academicians.
+              students with valuable insights from industry experts and academicians in Data Science and Multidisciplinary area..
             </p>
           </section>
           
