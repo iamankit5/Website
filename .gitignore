@@ -1,4 +1,4 @@
-An error occurred: Network Error: Unable to connect to the server. Please check if the backend is running.# Byte-compiled / optimized / DLL files
+# Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
 *$py.class
